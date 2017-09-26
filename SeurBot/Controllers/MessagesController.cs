@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
+using System;
 
 namespace SeurBot
 {
@@ -18,6 +19,13 @@ namespace SeurBot
         {
             if (activity.Type == ActivityTypes.Message)
             {
+                // Let user knows Bot is writing...
+                var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                Activity isTypingReply = activity.CreateReply();
+                isTypingReply.Type = ActivityTypes.Typing;
+                await connector.Conversations.ReplyToActivityAsync(isTypingReply);
+                //
+
                 await Conversation.SendAsync(activity, () => new Dialogs.SeurDialog());
             }
             else
